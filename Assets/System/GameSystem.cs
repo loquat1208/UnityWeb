@@ -1,0 +1,60 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public enum STATE {
+	NONE,
+	WARP,
+	ZOOM,
+}
+
+public class GameSystem : MonoBehaviour {
+	public float ZoomSpeed;
+	private STATE _state;
+	private Player _player;
+	private Camera _camera;
+	private Aim _aim;
+	private float _timer;
+
+	void Awake( ) {
+		_player = GameObject.Find( "Player" ).gameObject.GetComponent<Player>( );
+		_camera = GameObject.Find( "Main Camera" ).gameObject.GetComponent<Camera>( );
+		_aim = GameObject.Find( "Aim" ).gameObject.GetComponent<Aim>( );
+		Time.captureFramerate = 60;
+		_state = STATE.NONE;
+	}
+
+	void Update( ) {
+		switch ( _state ) {
+		case STATE.NONE:
+			_player.targeting( );
+			_player.freeView( );
+			_player.view( );
+			_camera.FreeCamera( );
+			_aim.freeAim( );
+			break;
+		case STATE.WARP:
+			if ( _timer > 1.0f ) {
+				_state = STATE.ZOOM;
+			}
+			_camera.FreeCamera( );
+			_aim.freeAim( );
+			_timer += Time.deltaTime * ZoomSpeed;
+			_player.move( _timer );
+			break;
+		case STATE.ZOOM:
+			_player.fixView( );
+			_player.view( );
+			_aim.fixAim( );
+			break;
+		}
+		Debug.Log( _timer );
+	}
+
+	public STATE getState( ) {
+		return _state;
+	}
+
+	public void setState( STATE state ) {
+		_state = state;
+	}
+}
