@@ -2,49 +2,50 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
-	public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
-	public RotationAxes axes = RotationAxes.MouseXAndY;
-	public float sensitivityX = 15F;
-	public float sensitivityY = 15F;
+    public enum RotationAxes { MouseXAndY = 0, MouseX = 1, MouseY = 2 }
+    public RotationAxes axes = RotationAxes.MouseXAndY;
+    public float sensitivityX = 15F;
+    public float sensitivityY = 15F;
+    public float ZoomDistance = 2f;
 
-	private float min_x;
-	private float max_x;
-	private float min_y;
-	private float max_y;
-	private float rotationY = 0F;
-	private float rotationX = 0F;
-	private bool _target_on;
-	private GameObject _loading;
-	private RaycastHit _hit_obj;
+    private float rotationY = 0F;
+    private float rotationX = 0F;
+    private GameObject _loading;
+    private RaycastHit _hit_obj;
 
-	void Start( ) {
-		_target_on = false;
-		_loading = null;
-	}
+    void Start( ) {
+        _loading = null;
+    }
 
-	public void targeting( ) {
-		Vector3 fwd = transform.forward;
-		if ( Physics.Raycast( transform.position, fwd, out _hit_obj, Mathf.Infinity ) ) {
-			//just hit planet, do loading.
-			if ( _hit_obj.transform.tag != "Planet" ) {
-				return;
-			}
-			//loading is just one.
-			if ( _loading == null ) {
-				Object loading = Resources.Load( "Prefabs/Loading" );
-				Vector3 pos = _hit_obj.transform.position;
-				Quaternion dir = transform.rotation;
-				_loading = Instantiate( loading, pos, dir ) as GameObject;
-			}
-			_target_on = true;
-		} else {
-			_target_on = false;
-			Destroy( _loading );
-		}
-	}
+    public bool targeting( ) {
+        Vector3 fwd = transform.forward;
+        if ( Physics.Raycast( transform.position, fwd, out _hit_obj, Mathf.Infinity ) ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void createLoading( ) {
+        if ( targeting( ) ) {
+            //just hit planet, do loading.
+            if ( _hit_obj.transform.tag != "Planet" ) {
+                return;
+            }
+            //loading is just one.
+            if ( _loading == null ) {
+                Object loading = Resources.Load( "Prefabs/Loading" );
+                Vector3 pos = _hit_obj.transform.position;
+                Quaternion dir = transform.rotation;
+                _loading = Instantiate( loading, pos, dir ) as GameObject;
+            }
+        } else {
+            Destroy( _loading );
+        }
+    }
 
 	public bool targetOn( ) {
-		return _target_on;
+		return targeting( );
 	}
 
 	public void move( float progress ) {
@@ -52,11 +53,11 @@ public class Player : MonoBehaviour {
 			return;
 		}
 		Vector3 start = Vector3.zero;
-		Vector3 end = _hit_obj.transform.position - new Vector3( -1, 0, 2 );
+        Vector3 end = _hit_obj.transform.position - ZoomDistance * transform.forward;
 		transform.position = Vector3.Lerp( start, end, progress );
 	}
 
-	public void view( ) {
+	public void view( float min_x, float min_y, float max_x, float max_y ) {
 		if ( axes == RotationAxes.MouseXAndY ) {
 			//rotationX = transform.localEulerAngles.y + Input.GetAxis( "Mouse X" ) * sensitivityX;
 			rotationX += Input.GetAxis( "Mouse X" ) * sensitivityY;
@@ -73,19 +74,5 @@ public class Player : MonoBehaviour {
 
 			transform.localEulerAngles = new Vector3( -rotationY, transform.localEulerAngles.y, 0 );
 		}
-	}
-
-	public void freeView( ) {
-		min_x = -360f;
-		max_x = 360f;
-		min_y = -90f;
-		max_y = 90f;
-	}
-
-	public void fixView( ) {
-		min_x = -90f;
-		max_x = 90f;
-		min_y = -45f;
-		max_y = 45f;
 	}
 }

@@ -25,11 +25,4 @@ public class Aim : MonoBehaviour {
 			gameObject.GetComponent<Image>( ).color = Color.green;
 		}
 	}
-
-	public void fixAim( ) {
-		gameObject.GetComponent<Image>( ).color = Color.green;
-		Vector3 pos = _player.transform.position + _player.transform.forward;
-		pos.z = _player.transform.position.z + 1.0f;
-		gameObject.transform.position = pos;
-	}
 }

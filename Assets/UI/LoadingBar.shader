@@ -46,13 +46,13 @@
 					float angle = atan2(i.uv.x-0.5 , i.uv.y-0.5);
 
 		    	    if(dist < _InnerRadius) {
-		    		clip(-1);
+		    			clip(-1);
 		    	    } else if(dist < _OuterRadius) {
 		    	    if ( angle > _Angle ) {
-		    	    	texcol.a = 0;
+		    	    	clip(-1);
 		    	    }
 		    	    } else {
-		    		clip(-1.0);
+		    			clip(-1);
 		    	    }
 		    	
 		    	    return texcol * _Color;
