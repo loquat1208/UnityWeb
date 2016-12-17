@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections;
 
 public class Aim : MonoBehaviour {
-
 	private Player _player;
 
 	void Awake( ) {

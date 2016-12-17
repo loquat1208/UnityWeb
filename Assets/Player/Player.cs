@@ -20,6 +20,10 @@ public class Player : MonoBehaviour {
     public bool targeting( ) {
         Vector3 fwd = transform.forward;
         if ( Physics.Raycast( transform.position, fwd, out _hit_obj, Mathf.Infinity ) ) {
+            //just hit planet, do loading.
+            if ( _hit_obj.transform.tag != "Planet" ) {
+                return false;
+            }
             return true;
         } else {
             return false;
@@ -28,10 +32,6 @@ public class Player : MonoBehaviour {
 
     public void createLoading( ) {
         if ( targeting( ) ) {
-            //just hit planet, do loading.
-            if ( _hit_obj.transform.tag != "Planet" ) {
-                return;
-            }
             //loading is just one.
             if ( _loading == null ) {
                 Object loading = Resources.Load( "Prefabs/Loading" );
