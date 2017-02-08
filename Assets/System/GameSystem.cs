@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum STATE {
 	NONE,
@@ -9,6 +10,7 @@ public enum STATE {
 
 public class GameSystem : MonoBehaviour {
 	public float ZoomSpeed;
+    public float ZoomTime = 1;
 
 	private Player _player;
 	private Camera _camera;
@@ -28,22 +30,24 @@ public class GameSystem : MonoBehaviour {
 	    _camera.FreeCamera( );
 		_aim.freeAim( );
 		switch ( _state ) {
-		case STATE.NONE:
-			_player.targeting( );
-            _player.createLoading( );
-			_player.view( -360f, -90f, 360f, 90f );
-			break;
-		case STATE.WARP:
-			if ( _timer > 1.0f ) {
-				_state = STATE.ZOOM;
-			}
-			_timer += Time.deltaTime * ZoomSpeed;
-			_player.move( _timer );
-			break;
-		case STATE.ZOOM:
-            _player.targeting( );
-			_player.view( -45f, -45f, 45f, 45f );
-			break;
+		    case STATE.NONE:
+		    	_player.targeting( );
+                _player.createLoading( );
+		    	_player.view( -360f, -90f, 360f, 90f );
+		    	break;
+		    case STATE.WARP:
+		    	if ( _timer > ZoomTime ) {
+		    		_state = STATE.ZOOM;
+		    	}
+		    	_timer += Time.deltaTime * ZoomSpeed;
+		    	_player.move( _timer );
+		    	break;
+		    case STATE.ZOOM:
+                string url = _player.getTarget( ).GetComponent<Planet>( ).getURL( );
+                Application.OpenURL( url );
+                _timer = 0;
+                _state = STATE.NONE;
+                break;
 		}
 	}
 

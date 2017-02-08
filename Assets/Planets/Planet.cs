@@ -5,6 +5,7 @@ public class Planet : MonoBehaviour {
 	
 	public float RotateSpeed;
 	public Color RimColor;
+    public string URL;
 
 	private Player _player;
 	private Material _material;
@@ -33,9 +34,7 @@ public class Planet : MonoBehaviour {
 		transform.Rotate( Vector3.up * Time.deltaTime * RotateSpeed );
 	}
 
-	void OnTriggerEnter( Collider con ) {
-		if ( con.tag == "Bullet" ) {
-			Application.OpenURL( "http://www.google.com" );
-		}
-	}
+    public string getURL( ) {
+        return URL;
+    }
 }

@@ -30,6 +30,10 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public GameObject getTarget( ) {
+        return _hit_obj.transform.gameObject;
+    }
+
     public void createLoading( ) {
         if ( targeting( ) ) {
             //loading is just one.
